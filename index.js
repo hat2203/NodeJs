@@ -1,18 +1,26 @@
+require("dotenv").config();
 // day la file chung cua mot du an, ca mot prj chi chay mot file nay
 const express = require("express");
-const app = express();
-//connect mongodb
 const database = require("./src/database");
-const Student = require("./src/models/student");
-const Classroom = require("./src/models/classroom");
+const app = express();
+
+//start session
+const session = require("express-session");
+app.use(session({
+    resave:true,
+    saveUninitialized: true,
+    secret: "t2203e",
+    cookie:{
+        maxAge: 3600000
+        // secure: true
+    }
+}))
+
 const PORT = process.env.PORT || 3000;
-
-
 app.listen(PORT,()=>{
     // ham listen la mot event loop luon lang nghe va ko bao gio stop, chi stop khi duoc tat
     console.log("Sever is running...");
 })
-
 
 //khai bao rout
 
@@ -21,6 +29,14 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
+const studentRoute = require("./src/routes/student.route");
+app.use("/students",studentRoute);
+
+const subjectRoute = require("./src/routes/subject.route");
+app.use("/subject",subjectRoute);
+
+const authRouter = require("./src/routes/auth.route");
+app.use("/auth", authRouter);
 
 app.get("/",function (req,res){
    // res.send("Hello everybody");// phan hoi tra ve giong return trong PHP, tra ve trang chu dang html
@@ -38,65 +54,7 @@ app.get("/",function (req,res){
     });
 });
 
-app.get("/student",function (req,res){
-    const Student = require("./src/models/student");
-    Student.find({}).then(rs=>{
-        res.render("studentList",{
-            items: rs
-        })
-    }).catch(err=>{
-        res.send(err);
-    });
-});
 
-app.get("/createStudent",(req,res)=>{
-    res.render("createStudent");
-})
-app.post("/createStudent",(req,res)=>{
-    let s = req.body;
-    const Student = require("./src/models/student");
-    let newStudent = new Student(s);
-    newStudent.save().then(rs=>{
-        res.redirect("/student");
-    }).catch(err=>{
-        res.send(err);
-    })
-});
-
-app.get("/updateStudent/:id",function (req,res){
-    let id = req.params.id;
-    let Student = require("./src/models/student");
-    Student.findById(id).then(rs=>{
-        res.render("updateStudent",{
-            data: rs
-        });
-    }).catch(err=>{
-        res.send(err);
-    })
-})
-
-app.post("/updateStudent/:id",(req,res)=>{
-    let id = req.params.id;
-    let data = req.body;
-    let Student = require("./src/models/student");
-    Student.findByIdAndUpdate(id,data)
-        .then(rs=>res.redirect("/student"))
-        .catch(err=>res.send(err));
-
-    //cach tuong duong
-    // Student.findByIdAndUpdate(id,data).then(rs=>{
-    //     res.redirect("/student");
-    // }).catch(err=>{
-    //     res.send(err);
-    // })
-})
-app.get("/deleteStudent/:id",function (req,res){
-    let id = req.params.id;
-    let Student = require("./src/models/student");
-    Student.findByIdAndDelete(id)
-        .then(rs=>res.redirect("/student"))
-        .catch(err=>res.send(err));
-})
 
 //classroom
 app.get("/classRoom",function (req,res){

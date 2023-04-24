@@ -37,7 +37,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled">Disabled</a>
+                    <a class="nav-link disabled">User <%= auth.name%></a>
                 </li>
             </ul>
             <form class="d-flex" role="search">
@@ -50,11 +50,12 @@
 <section>
     <div class="container">
         <h1>Students</h1>
-        <a href="/createStudent" class="float-end btn btn-outline-primary">Create a new student</a>
+        <a href="/students/createStudent" class="float-end btn btn-outline-primary">Create a new student</a>
         <table class="table">
             <thead>
             <tr>
                 <th scope="col">#</th>
+                <th scope="col">Avatar</th>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Age</th>
@@ -66,13 +67,14 @@
             <% items.map((item,key)=>{ %>
                 <tr>
                     <th scope="row"><%= key+1 %></th>
+                    <td><img width="100" src="<%= item.avatar%>"/></td>
                     <td><%= item.name %></td>
                     <td><%= item.email %></td>
                     <td><%= item.age %></td>
                     <td><%= item.tel %></td>
                     <td>
-                        <a href="/updateStudent/<%= item._id %>" class="btn btn-outline-primary">Edit</a>
-                        <a onclick="return confirm('Ban chac chan muon xoa <%= item.name%>')" href="/deleteStudent/<%= item._id%>" class="btn btn-outline-danger">Delelte</a>
+                        <a href="/students/updateStudent/<%= item._id %>" class="btn btn-outline-primary">Edit</a>
+                        <a onclick="return confirm('Ban chac chan muon xoa <%= item.name%>')" href="/students/deleteStudent/<%= item._id%>" class="btn btn-outline-danger">Delelte</a>
                     </td>
                 </tr>
             <% })%>

@@ -1,5 +1,5 @@
-const serve = "mongodb://127.0.0.1:27017";
-const database = "T2203E";
+const serve = process.env.DATABASE_SERVER ;
+const database = process.env.DATABASE_NAME;
 let mongoose = require("mongoose");//require("mongoose") la mot dang singerparten
 
 class Database{
